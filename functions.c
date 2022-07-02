@@ -2,6 +2,7 @@
 #include <locale.h>
 #include <stdlib.h>
 #include "declaration.h"
+#include <ctype.h>
 struct tst{
 	char letra;
 	int ultimaletra;
@@ -10,7 +11,19 @@ struct tst{
 TST *inicializar(){
 	return NULL;
 }
+void lowercase(char *palavra){
+	int j;	
+	for (j=0;palavra[j]!='\0';j++){
+		palavra[j] = tolower(palavra[j]); 		
+	}
+}
 
+int vec_len(char *vec){
+    int c = -1;
+    while(*(vec++))
+        c++;
+    return c;
+}
 TST *inserirRaiz(char letra){
 	setlocale(LC_ALL,"");
 	TST *aux = (TST *) malloc(sizeof(TST));
@@ -40,23 +53,82 @@ void inserirfilhos(TST **arvore, char *letra){
 			(*arvore)->ultimaletra = 1;
 	}
 }
-void imprimir(TST *arvore, char* palavra, int cont)
+void posordemimprimir(TST *arvore, char* palavra, int cont)
 {
-    if (arvore!=NULL)
+	if (arvore!=NULL)
     {
-    	if(arvore->esquerda!=NULL)
-     		imprimir(arvore->esquerda, palavra, cont); 
+    		if(arvore->esquerda!=NULL)
+     		posordemimprimir(arvore->esquerda, palavra, cont); 
+	    if(arvore->direita!=NULL)
+        	posordemimprimir(arvore->direita, palavra, cont);
         palavra[cont] = arvore->letra;
         if (arvore->ultimaletra)
         {
             palavra[cont+1] = '\0';
-            printf( "%s\n", palavra);
+            if(vec_len(palavra)>=2)
+            	printf( "%s\n", palavra);
         } 
         if(arvore->meio!=NULL)
-        	imprimir(arvore->meio, palavra, cont+1);
-        if(arvore->direita!=NULL)
-        	imprimir(arvore->direita, palavra, cont);
+        	posordemimprimir(arvore->meio, palavra, cont+1);
+    
+    
     }
+    else
+    	printf("\t\t\t\t\t\t\t\t\t¡rvore vazia!!");
+}
+void carregarpalavrasdoficheiro(TST **arvore){
+	FILE *ficha_f;
+	char palavra[10000];
+	ficha_f=fopen("msg.txt","rt");
+	while(!feof(ficha_f)){
+		fscanf(ficha_f,"%s\n",palavra);
+		lowercase(palavra);
+		inserirfilhos(arvore, palavra);
+	}
+	fclose(ficha_f);
+}
+void preordemimprimir(TST *arvore, char* palavra, int cont)
+{
+	if (arvore!=NULL)
+    {
+     
+        palavra[cont] = arvore->letra;
+        if (arvore->ultimaletra)
+        {
+            palavra[cont+1] = '\0';
+            if(vec_len(palavra)>=2)
+            	printf( "%s\n", palavra);
+        } 
+       if(arvore->meio!=NULL)
+        	preordemimprimir(arvore->meio, palavra, cont+1);
+    	if(arvore->esquerda!=NULL)
+     		preordemimprimir(arvore->esquerda, palavra, cont); 
+	    if(arvore->direita!=NULL)
+        	preordemimprimir(arvore->direita, palavra, cont);
+    }
+    else
+    	printf("\t\t\t\t\t\t\t\t\t¡rvore vazia!!");
+}
+void emordemimprimir(TST *arvore, char* palavra, int cont)
+{
+    if (arvore!=NULL)
+    {
+    	if(arvore->esquerda!=NULL)
+     		emordemimprimir(arvore->esquerda, palavra, cont); 
+        palavra[cont] = arvore->letra;
+        if (arvore->ultimaletra)
+        {
+            palavra[cont+1] = '\0';
+            if(vec_len(palavra)>=2)
+            	printf( "%s\n", palavra);
+        } 
+        if(arvore->meio!=NULL)
+        	emordemimprimir(arvore->meio, palavra, cont+1);
+        if(arvore->direita!=NULL)
+        	emordemimprimir(arvore->direita, palavra, cont);
+    }
+    else
+    	printf("\t\t\t\t\t\t\t\t\t¡rvore vazia!!");
 }
 int maior_palavra_entre_duas(char *palavra,char *palavra1){
 		int  i,j,cont=0,numero=vec_len(palavra), numero1=vec_len(palavra1);
@@ -75,12 +147,7 @@ int maior_palavra_entre_duas(char *palavra,char *palavra1){
 	}
 	return j;
 }
-int vec_len(char *vec){
-    int c = -1;
-    while(*(vec++))
-        c++;
-    return c;
-}
+
 void imprimir_palavras_com_distacia_de_edicao(TST *arvore, char* palavra,char *palavra1, int cont)
 {
 	int c;
