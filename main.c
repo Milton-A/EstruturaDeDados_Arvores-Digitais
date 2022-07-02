@@ -4,18 +4,19 @@ int main(){
 	setlocale(LC_ALL,"");
 	TST *trie=inicializar();
 	char palavra[1000],palavra1[1000],palavra2[1000],letra[1000];
-	int opcao,i;
+	int opcao,i,distancia;
 	carregarpalavrasdoficheiro(&trie);
 	do{
 		system("cls");
 		printf("\t\t\t\t\t\t\tDigital Trie\n\n");
 		printf("\t\t\t**************************************************************************\n");
 		printf("\t\t\t#                                                                        #\n");
-		printf("\t\t\t#           1- Inserir       \t\t2- Eliminar                      #\n");
-		printf("\t\t\t#           3-Palavra Quebrada \t\t4- -Palavras Ligadas             #\n");
-		printf("\t\t\t#           5- Imprimir em pós-ordem \t6- Imprimir em pré-ordem         #\n");
-		printf("\t\t\t#           7- Imprimir em ordem \t8- Alterar elemento              #\n");
-		printf("\t\t\t#           9-Distância De Edição       0-Sair                           #\n");
+		printf("\t\t\t#       1- Inserir                  2- Eliminar                          #\n");
+		printf("\t\t\t#       3- Palavra quebrada         4- Palavras ligadas                  #\n");
+		printf("\t\t\t#       5- Imprimir em pós-ordem    6- Imprimir em pré-ordem             #\n");
+		printf("\t\t\t#       7- Imprimir em ordem        8- Alterar elemento                  #\n");
+		printf("\t\t\t#       9- Distância de edição     10- Calcular a distância de edição    #\n");
+		printf("\t\t\t#       0- Sair\t\t\t\t                                 #\n");
 		printf("\t\t\t#                                                                        #\n");
 		printf("\t\t\t**************************************************************************\n");
 		printf("\t\t\tR:_ ");
@@ -120,7 +121,25 @@ int main(){
 				else
 					printf("Uma das palavras digitadas não consta na árvore");
 				system("pause");
-				break;		
+				break;
+			case 10:
+				printf("\nDigite as palavras que serão calculadas as suas distâncias de edição\n");
+				fflush(stdin);
+				printf("Digite a primeira palavra\n");
+				gets(palavra);
+				lowercase(palavra);
+				fflush(stdin);
+				printf("Digite a segunda palavra\n");
+				gets(palavra1);
+				fflush(stdin);
+				lowercase(palavra1);
+				distancia=calculo_distancia_de_edicao(trie,palavra,palavra1);
+				if(distancia!=-1)
+					printf("A distância de edição entre a palavra %s e %s é de : %d ",palavra,palavra1,distancia);
+				else
+					printf("Uma das palavras digitadas não existe na árvore");
+				system("pause");
+				break;
 			default:
 				printf("Opção inválida");
 				system("pause");

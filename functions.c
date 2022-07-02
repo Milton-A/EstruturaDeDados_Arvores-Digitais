@@ -79,7 +79,7 @@ void posordemimprimir(TST *arvore, char* palavra, int cont)
 void carregarpalavrasdoficheiro(TST **arvore){
 	FILE *ficha_f;
 	char palavra[10000];
-	ficha_f=fopen("msg.txt","rt");
+	ficha_f=fopen("letras.txt","rt");
 	while(!feof(ficha_f)){
 		fscanf(ficha_f,"%s\n",palavra);
 		lowercase(palavra);
@@ -130,6 +130,7 @@ void emordemimprimir(TST *arvore, char* palavra, int cont)
     else
     	printf("\t\t\t\t\t\t\t\t\tÁrvore vazia!!");
 }
+
 int maior_palavra_entre_duas(char *palavra,char *palavra1){
 		int  i,j,cont=0,numero=vec_len(palavra), numero1=vec_len(palavra1);
 	if(numero>numero1){
@@ -147,7 +148,26 @@ int maior_palavra_entre_duas(char *palavra,char *palavra1){
 	}
 	return j;
 }
+int calculo_distancia_de_edicao(TST *arvore,char* palavra,char *palavra1){
+	int cont=-1,i;
+	if(buscar(arvore,palavra)&&buscar(arvore,palavra1)){
+		cont++;
+		if(vec_len(palavra)>vec_len(palavra1)){
+			for(i=0;palavra[i]!='\0';i++)
+				if(palavra[i]!=palavra1[i])
+					cont++;
+		}
+			else{
+					for(i=0;palavra1[i]!='\0';i++)
+						if(palavra[i]!=palavra1[i])
+							cont++;
+			}
+		return cont;
+	}
+	else
+		return cont;
 
+}
 void imprimir_palavras_com_distacia_de_edicao(TST *arvore, char* palavra,char *palavra1, int cont)
 {
 	int c;
@@ -280,10 +300,7 @@ int eliminar(TST *root, char* str)
             }
         }
     }
- 
     return 0;
-
-
 }
 int estavazia(TST *arvore){
 	if(arvore->esquerda||arvore->direita||arvore->meio)
